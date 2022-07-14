@@ -7,7 +7,8 @@ defmodule GildedRose do
   @aged_brie "Aged Brie"
   @backstage_passes "Backstage passes to a TAFKAL80ETC concert"
   @sulfuras "Sulfuras, Hand of Ragnaros"
-  @special_items [@aged_brie, @backstage_passes, @sulfuras]
+  @conjured "Conjured"
+  @special_items [@aged_brie, @backstage_passes, @sulfuras, @conjured]
   @highest_quality 50
 
   def update_quality(items) do
@@ -91,6 +92,16 @@ defmodule GildedRose do
   def maybe_increase_or_degrade_quality(%{name: @backstage_passes, sell_in: sell_in} = item)
       when sell_in < 0 do
     manually_set_quality(item, 0)
+  end
+
+  def maybe_increase_or_degrade_quality(%Item{name: @conjured, quality: quality} = item)
+      when quality == 1 do
+    manually_set_quality(item, 0)
+  end
+
+  # conjured items degrade in quality twice as fast as normal items
+  def maybe_increase_or_degrade_quality(%Item{name: @conjured} = item) do
+    decrease_item_quality(item, 2)
   end
 
   # all other items decrease in quality

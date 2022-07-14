@@ -9,6 +9,7 @@ defmodule GildedRoseTest do
 	# - "Backstage passes", like aged brie, increases in Quality as its SellIn value approaches;
 	# Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but
 	# Quality drops to 0 after the concert
+  # - "Conjured" items degrade in Quality twice as fast as normal items
 
   @sulfura_item %Item{
     name: "Sulfuras, Hand of Ragnaros",
@@ -22,6 +23,11 @@ defmodule GildedRoseTest do
   }
   @backstage_passes_item %Item{
     name: "Backstage passes to a TAFKAL80ETC concert",
+    sell_in: 15,
+    quality: 30
+  }
+  @conjured_item %Item{
+    name: "Conjured",
     sell_in: 15,
     quality: 30
   }
@@ -72,6 +78,13 @@ defmodule GildedRoseTest do
       item = %{@backstage_passes_item | sell_in: 0}
       %{quality: item_quality} = GildedRose.update_item(item)
       assert item_quality == 0
+    end
+  end
+
+  describe "Conjured items" do
+    test "it degrades twice as fast as normal items" do
+      %{quality: item_quality} = GildedRose.update_item(@conjured_item)
+      assert item_quality == 28
     end
   end
 
